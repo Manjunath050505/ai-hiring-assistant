@@ -1,2 +1,115 @@
-'use client';import {useEffect,useState} from 'react';import Link from 'next/link';import {Plus,ArrowUpRight} from 'lucide-react';import {Shell,Top} from '../../components/Shell';import {api} from '../../lib/api';
-export default function Dashboard(){const [s,setS]=useState<any>();const [items,setItems]=useState<any[]>([]);useEffect(()=>{api('/dashboard/stats').then(setS);api('/interviews').then(setItems)},[]);return <Shell><Top title="Dashboard" action={<Link href="/interviews/new" className="btn btn-primary flex items-center gap-2"><Plus size={16}/> New interview</Link>}/><div className="p-6 md:p-9 space-y-7"><section className="grid grid-cols-2 lg:grid-cols-5 gap-4">{[['Total Interviews',s?.total??0],['In Progress',s?.active??0],['Completed',s?.completed??0],['Shortlisted',s?.shortlisted??0],['Avg. Score',s?.average_score??0]].map(([a,b])=><div className="card p-5" key={a as string}><div className="text-sm muted">{a as string}</div><div className="text-2xl font-bold mt-2">{b as string|number}</div></div>)}</section><section className="card overflow-hidden"><div className="p-5 border-b flex justify-between"><div><h2 className="font-bold">Recent interviews</h2><p className="text-sm muted">Latest candidate activity</p></div><Link href="/interviews" className="text-sm font-semibold">View all <ArrowUpRight className="inline" size={14}/></Link></div><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="text-left text-gray-500 bg-gray-50"><th className="p-4">Candidate</th><th>Position</th><th>Status</th><th>Score</th><th>Recommendation</th><th>Date</th></tr></thead><tbody>{items.slice(0,8).map(i=><tr key={i.id} className="border-t"><td className="p-4 font-semibold">{i.candidate_name||'Awaiting candidate'}</td><td>{i.job_title}</td><td><span className="px-2.5 py-1 rounded-full bg-gray-100 text-xs">{i.status.replaceAll('_',' ')}</span></td><td>{i.overall_score??'—'}</td><td>{i.recommendation?.replace('_',' ')||'—'}</td><td>{new Date(i.created_at).toLocaleDateString()}</td></tr>)}</tbody></table>{!items.length&&<div className="p-12 text-center muted">No interviews yet. Create your first interview.</div>}</div></section></div></Shell>}
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Plus, ArrowUpRight } from 'lucide-react';
+import { Shell, Top } from '../../components/Shell';
+import { api } from '../../lib/api';
+
+export default function Dashboard() {
+  const [s, setS] = useState<any>();
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    api<any>('/dashboard/stats').then(setS);
+    api<any[]>('/interviews').then(setItems);
+  }, []);
+
+  return (
+    <Shell>
+      <Top
+        title="Dashboard"
+        action={
+          <Link
+            href="/interviews/new"
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <Plus size={16} /> New interview
+          </Link>
+        }
+      />
+
+      <div className="p-6 md:p-9 space-y-7">
+        <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {[
+            ['Total Interviews', s?.total ?? 0],
+            ['In Progress', s?.active ?? 0],
+            ['Completed', s?.completed ?? 0],
+            ['Shortlisted', s?.shortlisted ?? 0],
+            ['Avg. Score', s?.average_score ?? 0],
+          ].map(([a, b]) => (
+            <div className="card p-5" key={a as string}>
+              <div className="text-sm muted">{a as string}</div>
+              <div className="text-2xl font-bold mt-2">
+                {b as string | number}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="card overflow-hidden">
+          <div className="p-5 border-b flex justify-between">
+            <div>
+              <h2 className="font-bold">Recent interviews</h2>
+              <p className="text-sm muted">Latest candidate activity</p>
+            </div>
+
+            <Link href="/interviews" className="text-sm font-semibold">
+              View all{' '}
+              <ArrowUpRight className="inline" size={14} />
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-gray-500 bg-gray-50">
+                  <th className="p-4">Candidate</th>
+                  <th>Position</th>
+                  <th>Status</th>
+                  <th>Score</th>
+                  <th>Recommendation</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {items.slice(0, 8).map((i) => (
+                  <tr key={i.id} className="border-t">
+                    <td className="p-4 font-semibold">
+                      {i.candidate_name || 'Awaiting candidate'}
+                    </td>
+
+                    <td>{i.job_title}</td>
+
+                    <td>
+                      <span className="px-2.5 py-1 rounded-full bg-gray-100 text-xs">
+                        {i.status.replaceAll('_', ' ')}
+                      </span>
+                    </td>
+
+                    <td>{i.overall_score ?? '—'}</td>
+
+                    <td>
+                      {i.recommendation?.replace('_', ' ') || '—'}
+                    </td>
+
+                    <td>
+                      {new Date(i.created_at).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {!items.length && (
+              <div className="p-12 text-center muted">
+                No interviews yet. Create your first interview.
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </Shell>
+  );
+}
