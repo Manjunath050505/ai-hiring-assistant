@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hiring
+      POSTGRES_USER: hiring
+      POSTGRES_PASSWORD: hiring
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://hiring:hiring@db:5432/hiring
+      HUNAR_MOCK_MODE: "true"
+      CORS_ORIGINS: http://localhost:3000
+    ports: ["8000:8000"]
+    depends_on: [db]
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    volumes: ["./frontend:/app"]
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    ports: ["3000:3000"]
+    depends_on: [backend]
+volumes:
+  pgdata:

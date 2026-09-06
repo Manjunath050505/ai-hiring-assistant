@@ -1,0 +1,1 @@
+import {Shell,Top} from '../../components/Shell';export default function Settings(){return <Shell><Top title="Settings"/><div className="p-9"><div className="card p-8 max-w-2xl"><h2 className="font-bold">Integration settings</h2><p className="muted mt-2">Hunar credentials are intentionally managed only in the backend environment.</p></div></div></Shell>}

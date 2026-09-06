@@ -1,0 +1,1 @@
+import {Shell,Top} from '../../components/Shell';export default function Jobs(){return <Shell><Top title="Jobs"/><div className="p-9"><div className="card p-8"><h2 className="font-bold">Jobs are managed through interview creation in this MVP.</h2><p className="muted mt-2">Create an interview to add a reusable job profile.</p></div></div></Shell>}
